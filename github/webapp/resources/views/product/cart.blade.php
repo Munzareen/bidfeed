@@ -39,13 +39,19 @@
                 <div class="cart-list-item">
                     <div class="item">
                         <div class="img">
-                            <img src="{{ asset('public/assets/images/gallery-card-img-1.png') }}" alt="img" class="img-fluid">
+                            @if(!empty($details['image']))
+                            <img src="{{ $details['image'] }}" alt="img" class="img-fluid">
+                            @else
+                            <img src="{{ asset('public/assets/images/no-image.png') }}" alt="img" class="img-fluid">
+                            @endif
                         </div>
                         <div class="text">
                             <p class="name">{{ $details['name'] }}</p>
+                            {{--
                             <div class="size-wrap">
                                 <div class="size-box">M</div>
                             </div>
+                            --}}
                         </div>
                     </div>
                     <div class="item-quanity">

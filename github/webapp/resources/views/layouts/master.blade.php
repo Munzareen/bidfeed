@@ -12,6 +12,48 @@
         .active-like{
             background-color: red !important;
         }
+        .error{
+            color: red;
+        }
+
+        /* Safari */
+		@-webkit-keyframes spin {
+			0% {
+				-webkit-transform: rotate(0deg);
+			}
+
+			100% {
+				-webkit-transform: rotate(360deg);
+			}
+		}
+
+		@keyframes  spin {
+			0% {
+				transform: rotate(0deg);
+			}
+
+			100% {
+				transform: rotate(360deg);
+			}
+		}
+        .list-group {
+			position: absolute;
+			width: 100%;
+			z-index: 9999;
+			height: 410px;
+			overflow-y: auto;
+		}
+		.list-group-item {
+			padding: 10px 20px;
+		}
+		.list-group-item a {
+			color: #282828;
+			font-size: 14px;
+			transition: all 0.25s;
+		}
+		.list-group-item:hover a {
+			font-weight: 600;
+		}
     </style>
 </head>
 <body>

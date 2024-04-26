@@ -95,8 +95,8 @@ class AuthController extends Controller
     {
         $curl = curl_init();
 
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://www.bitfeed.qlogictechnologies.com/mobile/index.php/api/login',
+        curl_setopt_array($curl, array( 
+            CURLOPT_URL => $this->apiBaseUrl . 'login',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -126,8 +126,9 @@ class AuthController extends Controller
         return $response;
     }
 
-    public function profile()
+    public function profile($user_id)
     {
+        $userId = base64_decode($user_id);
         $goto = new HomeController();
         $response = $goto->productCategory();
 
@@ -138,17 +139,47 @@ class AuthController extends Controller
             $data['productCategories'] = $res->data;
         }
 
-        $user_post_list = $this->getUserPost(Session::get('userData')->user_id, Session::get('userData')->user_id);
-        $user_product_list = $this->getUserProduct(Session::get('userData')->user_id, Session::get('userData')->user_id);
+        $user_post_list = $this->getUserPost(Session::get('userData')->user_id, $userId);
+        $user_product_list = $this->getUserProduct(Session::get('userData')->user_id, $userId);
         $user_order_list = $this->getOrderList(Session::get('userData')->user_id);
         $user_bid_list = $this->getBidList(Session::get('userData')->user_id);
+        $user_profile = $this->getUserProfile(Session::get('userData')->user_id, $userId);
 
         $data['user_post_list_decode'] = json_decode($user_post_list);
         $data['user_product_list_decode'] = json_decode($user_product_list);
         $data['user_order_list'] = json_decode($user_order_list);
         $data['user_bid_list'] = json_decode($user_bid_list);
+        $data['user_profile'] = json_decode($user_profile);
+        $data['user_id'] = $userId;
+
+        // dd($data['user_profile']);
 
         return view('user.profile', $data);
+    }
+
+    /** User profile */
+    public function getUserProfile($userId, $otherid)
+    {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $this->apiBaseUrl . 'user_profile?user_id=' . $userId . '&other_id=' . $otherid,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'Authentication: ' . Session::get('bearer_token') . ''
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        return $response;
     }
 
     /** User posts */
@@ -285,5 +316,46 @@ class AuthController extends Controller
 
         curl_close($curl);
         return $response;
+    }
+
+    /** create follow */
+    public function createFollow(Request $request)
+    {
+        $follower_id = base64_decode($request->id);
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $this->apiBaseUrl . 'create_follow',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => array(
+                'user_id' => Session::get('userData')->user_id, 
+                'follower_id' => $follower_id
+            ),
+            CURLOPT_HTTPHEADER => array(
+                'Authentication: ' . Session::get('bearer_token') . ''
+            ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        return $response;
+    }
+
+    /** logout */
+    public function logout()
+    {
+        session()->forget('userId');
+        session()->forget('bearer_token');
+        session()->forget('userData');
+
+        return redirect('/');
     }
 }

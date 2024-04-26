@@ -18,11 +18,14 @@ class User_model extends CI_Model {
 			user_email,
 			user_dob,
 			user_gender,
+			user_phone,
 			concat("'.base_url('uploads/user/').'",user_image) as user_image,
 			user_image as user_image_name,
 			user_profile_complete,
 			user_is_verify,
 			user_authentication,
+            user_device,
+            user_device_token,
 			user_created
 		')->get_where('b_user',$obj)->row();
 	}

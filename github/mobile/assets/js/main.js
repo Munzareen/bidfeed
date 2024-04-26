@@ -1,4 +1,4 @@
-var base_url = window.location.origin + '/projects/pikkrr/';
+var base_url = window.location.origin + '/mobile/';
 $(document).ready(function() {
   // Menu Trigger
   $('#menuToggle').on('click', function(event) {

@@ -41,14 +41,17 @@ class CartController extends Controller
                 $cart[$id] = [
                     "name" => $product->product_description,
                     "quantity" => 1,
-                    "price" => $product->pp_price
+                    "price" => $product->pp_price,
+                    "image" => isset($product->product_images[0]->pf_file) ? $product->product_images[0]->pf_file : null
                 ];
             }
             session()->put('cart', $cart);
+
             return array(
                 'status' => 1,
                 'message' => 'Product added to cart successfully.',
-                'nav_cart_count' => count((array) session('cart'))
+                'nav_cart_count' => count((array) session('cart')),
+                'nav_cart' => view('layouts.nav-cart')->render()
             );
         } else {
             return array(

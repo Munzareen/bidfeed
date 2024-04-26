@@ -16,7 +16,7 @@
 				@foreach($featured as $key => $featured)
 				<div class="swiper-slide">
 					<div class="feature-img">
-						<a href="{{ $featured->product_image }}" data-fancybox="gallery" data-caption="">
+						<a href="{{ url('product-details', base64_encode($featured->product_id)) }}">
 							<img src="{{ $featured->product_image }}" alt="img" class="img-fluid">
 						</a>	
 					</div>
@@ -61,7 +61,7 @@
 											<img src="{{ asset('public/assets/images/gallery-user-img.png') }}" alt="icon" class="img-fluid">
 											@endif
 										</div>
-										<div class="user-name"><p>{{ $upcoming->user_name }}</p></div>
+										<div class="user-name"><p><a href="{{ url('profile', base64_encode($upcoming->product_user_id)) }}">{{ $upcoming->user_name }}</a></p></div>
 									</div>
 									{{--<div class="card-tag">BOOSTED</div>--}}
 								</div>

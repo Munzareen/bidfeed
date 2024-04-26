@@ -1,3 +1,6 @@
+var baseUrl = $('#baseUrl').val();
+var apiBaseUrl = $('#apiBaseUrl').val();
+
 $(document).ready(function () {
 
   var msg = $('#mSg').val();
@@ -16,6 +19,39 @@ function not(message, color) {
   });
 }
 
+/** Main search */
+$(document).on('click', '#search-btn', function (event) {
+  var search_key = $('#search-key').val();
+  var search_type = $('#search-type').val();
+
+  $.ajax({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    url: baseUrl + "/search",
+    type: "get",
+    data: {
+      search_key: search_key,
+      search_type: search_type
+    },
+    success: function (res) {
+      var data = JSON.parse(res);
+      console.log('data ** ', data);
+
+      if (data.status == 1) {
+        
+      }
+      else if (data.status == 0) {
+        // not(data.message, 'error');
+      }
+    },
+    error: function (error) {
+      console.log(error);
+    }
+  });
+
+});
+
 
 $("#cart-box-btn").click(function (e) {
   e.stopPropagation();
@@ -24,7 +60,8 @@ $("#cart-box-btn").click(function (e) {
   $("#cartbox-dropdown-only").addClass("active");
   $("#cartbox-dropdown-only").fadeIn(250);
 })
-$("#cartbox-dropdown-only .close-cart").click(function (e) {
+// $("#cartbox-dropdown-only .close-cart").click(function (e) {
+$(document).on('click', "#cartbox-dropdown-only .close-cart", function (e) {
   e.stopPropagation();
   $("#cartbox-dropdown-only").removeClass("active");
   $("#cartbox-dropdown-only").fadeOut(250);
@@ -39,23 +76,23 @@ $("#proceed-to-review").click(function (e) {
   var order_city = $('#order_city').val();
   var order_address = $('#order_address').val();
 
-  if(order_country == null || order_country == ''){
+  if (order_country == null || order_country == '') {
     not('Country failed is required.', 'error');
     $('#order_country').focus();
   }
-  else if(order_state == null || order_state == ''){
+  else if (order_state == null || order_state == '') {
     not('State failed is required.', 'error');
     $('#order_state').focus();
   }
-  else if(order_city == null || order_city == ''){
+  else if (order_city == null || order_city == '') {
     not('City failed is required.', 'error');
     $('#order_city').focus();
   }
-  else if(order_address == null || order_address == ''){
+  else if (order_address == null || order_address == '') {
     not('Address failed is required.', 'error');
     $('#order_address').focus();
   }
-  else{
+  else {
     $("#shipping-tab").removeClass("active");
     $("#shipping").removeClass("active show");
     $("#review").addClass("active show");
@@ -157,6 +194,7 @@ $(document).ready(function () {
   });
 });
 
+
 // FILE UPLOAD
 FilePond.create(
   document.querySelector('#post-img-upload')
@@ -166,7 +204,7 @@ FilePond.create(
 var swiper = new Swiper(".input-color-slider", {
   slidesPerView: "auto",
   spaceBetween: 10,
-  loop: true,
+  loop: false,
   navigation: {
     nextEl: ".bg-color-wrap .swiper-button-next",
     prevEl: ".bg-color-wrap .swiper-button-prev",

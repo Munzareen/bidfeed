@@ -55,6 +55,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <strong class="card-title">User's</strong>
+                                <a href="<?= base_url('admin/user_create') ?>" class="btn btn-sm btn-success pull-right" title="Add User"><i class="fa fa-plus"></i></a>
                             </div>
                             <div class="card-body">
                                 <table id="bootstrap-data-table" class="table table-striped table-bordered">
@@ -62,32 +63,39 @@
                                         <tr>
                                             <th>ID#</th>
                                             <th>User Name</th>
+                                            <th>User Email</th>
                                             <th>User Phone</th>
-                                            <th>User CNIC</th>
-                                            <th>User Business</th>
+                                            <th>User DOB</th>
+                                            <th>User Gender</th>
                                             <th>Blocked</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                       <?php
                                         foreach($user_obj as $user){
                                           ?>
-                                          <tr>
-                                              <td><?= $user['user_id'] ?></td>
-                                              <td><?= $user['user_name'] ?></td>
-                                              <td><?= $user['user_phone'] ?></td>
-                                              <td><?= $user['user_cnic'] ?></td>
-                                              <td><?= $user['user_business_name'] ?></td>
-                                              <td>
-                                                <?php
-                                                if($user['user_is_blocked']>"0"){
-                                                  ?><input type="checkbox" class="is_blocked" data-id="<?= $user['user_id'] ?>" value="0" checked><?php
-                                                }else{
-                                                  ?><input type="checkbox" class="is_blocked" data-id="<?= $user['user_id'] ?>" value="1"><?php
-                                                }
-                                                ?>
-                                              </td>
-                                          </tr>
+                                            <tr>
+                                                <td><?= $user['user_id'] ?></td>
+                                                <td><?= $user['user_name'] ?></td>
+                                                <td><?= $user['user_email'] ?></td>
+                                                <td><?= $user['user_phone'] ?></td>
+                                                <td><?= $user['user_dob'] ?></td>
+                                                <td><?= $user['user_gender'] ?></td>
+                                                <td>
+                                                    <?php
+                                                    if($user['user_is_blocked']>"0"){
+                                                    ?><input type="checkbox" class="is_blocked" data-id="<?= $user['user_id'] ?>" value="0" checked><?php
+                                                    }else{
+                                                    ?><input type="checkbox" class="is_blocked" data-id="<?= $user['user_id'] ?>" value="1"><?php
+                                                    }
+                                                    ?>
+                                                </td>
+                                                <td>
+                                                    <a href="<?= base_url('admin/user_edit?id=' . $user['user_id']) ?>" class="btn btn-sm btn-primary" title="Edit User"><i class="fa fa-edit"></i></a>
+                                                    <a href="<?= base_url('admin/user_delete?id=' . $user['user_id']) ?>" class="btn btn-sm btn-danger" title="Delete User" onclick="return confirm('Are you sure you want to delete this user?');"><i class="fa fa-trash"></i></a>
+                                                </td>
+                                            </tr>
                                           <?php
                                         }
                                       ?>

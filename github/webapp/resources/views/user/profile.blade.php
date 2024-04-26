@@ -6,25 +6,33 @@
 	<div class="container">
 		<div class="user-profile-wrap">
 			<div class="img-box">
-				@if(!empty(session()->get('userData')->user_image))
-				<img src="{{ session()->get('userData')->user_image }}" alt="icon" class="img-fluid">
+				@if(!empty($user_profile->data[0]->user_image))
+				<img src="{{ $user_profile->data[0]->user_image }}" alt="icon" class="img-fluid">
 				@else
 				<img src="{{ asset('public/assets/images/user-avatar.png') }}" alt="icon" class="img-fluid">
 				@endif
 			</div>
-			<p class="profile-name">{{ session()->get('userData')->user_name }}</p>
-			<p class="profile-handle">{{ session()->get('userData')->user_email }}</p>
+			<p class="profile-name">{{ !empty($user_profile->data[0]->user_name) ? $user_profile->data[0]->user_name : '' }}</p>
+			<p class="profile-handle">{{ !empty($user_profile->data[0]->user_email) ? $user_profile->data[0]->user_email : '' }}</p>
 			<div class="followers-det">
-				<p><span>204</span> Following</p>
+				<p><span>{{ !empty($user_profile->data[0]->total_following) ? $user_profile->data[0]->total_following : 0 }}</span> Following</p>
 				<span>•</span>
-				<p><span>125k</span> Followers</p>
+				<p><span>{{ !empty($user_profile->data[0]->total_follower) ? $user_profile->data[0]->total_follower : 0 }}</span> Followers</p>
 			</div>
-			{{--
+			@if($user_id != session()->get('userData')->user_id)
 			<div class="user-profile-btns">
 				<button class="user-btn">Message</button>
-				<button class="user-btn btn-1">Follow</button>
+				@if(!empty($user_profile->data[0]->is_follow) && $user_profile->data[0]->is_follow == 1)
+				<button type="button" class="user-btn btn-1" value="{{ base64_encode($user_id) }}">
+					Following 
+				</button>
+				@else
+				<button type="button" class="user-btn btn-1 follow-user" value="{{ base64_encode($user_id) }}">
+					Follow <span id="sp-follow-user" class="d-none">&nbsp;<i class="fa fa-spinner fa-spin"></i> </span>
+				</button>
+				@endif
 			</div>
-			--}}
+			@endif
 		</div>
 		<div class="profile-tab-wrap">
 			<ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -34,6 +42,7 @@
 				<li class="nav-item" role="presentation">
 					<button class="nav-link" id="profile-2-tab" data-bs-toggle="tab" data-bs-target="#profile-2" type="button" role="tab" aria-controls="profile-2" aria-selected="false">Products</button>
 				</li>
+				@if($user_id == session()->get('userData')->user_id)
 				<li class="nav-item" role="presentation">
 					<button class="nav-link" id="profile-3-tab" data-bs-toggle="tab" data-bs-target="#profile-3" type="button" role="tab" aria-controls="profile-3" aria-selected="false">Favorite</button>
 				</li>
@@ -43,33 +52,24 @@
 				<li class="nav-item" role="presentation">
 					<button class="nav-link" id="profile-5-tab" data-bs-toggle="tab" data-bs-target="#profile-5" type="button" role="tab" aria-controls="profile-5" aria-selected="false">My Bid</button>
 				</li>
+				@endif
 			</ul>
 			<div class="tab-content" id="myTabContent">
 				<div class="tab-pane fade show active" id="profile-1" role="tabpanel" aria-labelledby="profile-1-tab">
 					<div class="upcoming-gallery-wrap">
 						<div class="upcoming-gallery tab-gallery-1">
 							@if($user_post_list_decode->status == 1)
-							@foreach($user_post_list_decode->data as $key => $user_post_list)
-							<div class="gallery-card-wrap">
+							@foreach($user_post_list_decode->data as $key => $user_post_list) 
+							<div class="gallery-card-wrap" style="border: 1px solid gray;">
 								<div class="gallery-card">
 									<div class="gallery-img">
-										<img src="{{ asset('public/assets/images/gallery-card-img-1.png') }}" alt="img" class="img-fluid">
-										<a href="#!" class="like-btn"><img src="{{ asset('public/assets/images/icon-heart.png') }}" alt="icon" class="img-fluid"></a>
-										<button class="bid-btn">Bid Now</button>
+										@if($user_post_list->post_type == 'file' && !empty($user_post_list->post_image))
+										<img src="{{ $user_post_list->post_image }}" alt="img" class="img-fluid">
+										@endif
+										<a href="#!" style="background:rgb(0 0 0 / 25%)" class="like-btn like-this @if($user_post_list->is_liked == 1) active-like @endif" source="{{ base64_encode($user_post_list->post_id) }}" type="post"><img src="{{ asset('public/assets/images/icon-heart.png') }}" alt="icon" class="img-fluid"></a>
 									</div>
-									<div class="gallery-info">
-										<p class="name">Tracksuit Men African Clothing Print Shirt Suit.</p>
-										<div class="card-user-info">
-											<div class="name-img">
-												<div class="img">
-													<img src="{{ asset('public/assets/images/gallery-user-img.png') }}" alt="img" class="img-fluid">
-												</div>
-												<div class="user-name">
-													<p>Phillip Saris</p>
-												</div>
-											</div>
-											<div class="card-tag">BOOSTED</div>
-										</div>
+									<div class="gallery-info" style="@if(!empty($user_post_list->post_color)) background : {{ $user_post_list->post_color }} @endif">
+										<p class="name">{{ !empty($user_post_list->post_text) ? $user_post_list->post_text : null }}</p>
 									</div>
 								</div>
 							</div>
@@ -271,3 +271,7 @@
 </section>
 
 @endsection
+@push('scripts')
+	<script src="{{ asset('public/assets/js/custom/home.js') }}"></script>
+    <script src="{{ asset('public/assets/js/custom/profile.js') }}"></script> 
+@endpush

@@ -6,6 +6,7 @@
 <script src="{{ asset('public/assets/js/filepond-min.js') }}"></script>
 <script src="{{ asset('public/assets/js/nouislider.min.js') }}"></script>
 <script src="{{ asset('public/assets/js/custom.js') }}"></script>
+<script src="{{ asset('public/assets/js/jquery.validate.js') }}"></script>
 
 <!-- Notification -->
 <script src="{{ asset('public/assets/notification/js/jquery.growl.js') }}"></script>

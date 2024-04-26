@@ -27,9 +27,8 @@ class HomeController extends Controller
         if ($home_list_decode->status == 1) {
             $data['featured'] = $home_list_decode->data->featured;
             $data['upcoming'] = $home_list_decode->data->upcoming;
-        }
-        else{
-            if($home_list_decode->status == 0 && $home_list_decode->message == 'Authentication is not valid.'){
+        } else {
+            if ($home_list_decode->status == 0 && $home_list_decode->message == 'Authentication is not valid.') {
                 session()->forget('userId');
                 session()->forget('bearer_token');
                 session()->forget('userData');
@@ -100,10 +99,12 @@ class HomeController extends Controller
         $data = array();
 
         $productDetail = $this->getProductDetail($id);
-
         $productCategory = $this->productCategory();
+        $productReview = $this->productReview($id);
+
         $productCategory_decode = json_decode($productCategory);
         $productDetail_decode = json_decode($productDetail);
+        $productReview_decode = json_decode($productReview);
 
         if ($productCategory_decode->status == 1) {
             $data['productCategories'] = $productCategory_decode->data;
@@ -113,12 +114,79 @@ class HomeController extends Controller
             $data['productDetail'] = $productDetail_decode->data;
         }
 
+        if ($productReview_decode->status == 1) {
+            $data['productReview'] = $productReview_decode->data;
+        }
+
         // Buy now
         if ($data['productDetail']->pp_type == 'buy_now') {
             return view('product.buy-now', $data);
         } else { // Bid now
             return view('product.bid-now', $data);
         }
+    }
+
+    public function createReview(Request $request)
+    {
+        $product_id = base64_decode($request->product_id);
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $this->apiBaseUrl . 'create_review',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => array(
+                'user_id' => Session::get('userData')->user_id,
+                'review_product_id' => $product_id,
+                'review_rate' => '4',
+                'review_review' => $request->review_review
+            ),
+            CURLOPT_HTTPHEADER => array(
+                'Authentication: ' . Session::get('bearer_token') . ''
+            ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        $create_review = json_decode($response);
+
+        if($create_review->status == 1){
+            return redirect()->back()->with('success', $create_review->message);
+        }
+        else{ 
+            return redirect()->back()->with('error', $create_review->message);
+        }
+
+    }
+
+    /** Product review */
+    public function productReview($product_id)
+    {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $this->apiBaseUrl . 'product_review?user_id='. Session::get('userData')->user_id .'&product_id='.$product_id,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'Authentication: ' . Session::get('bearer_token') . ''
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return $response;
     }
 
     /** Product Detail */
@@ -141,9 +209,7 @@ class HomeController extends Controller
         ));
 
         $response = curl_exec($curl);
-
         curl_close($curl);
-
         return $response;
     }
 
@@ -164,7 +230,7 @@ class HomeController extends Controller
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS => array(
-                'user_id' => Session::get('userData')->user_id, 
+                'user_id' => Session::get('userData')->user_id,
                 'other_id' => $source,
                 'type' => $type
             ),
@@ -178,5 +244,38 @@ class HomeController extends Controller
         curl_close($curl);
 
         return $response;
+    }
+
+    /** Main search */
+    public function search(Request $request)
+    {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $this->apiBaseUrl . 'search?user_id=' . Session::get('userData')->user_id . '&key=' . $request->search_key . '&type=' . $request->search_type,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'Authentication: ' . Session::get('bearer_token') . ''
+            ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        $search = json_decode($response);
+        $search_key = $request->search_key;
+        $search_type = $request->search_type;
+
+        if ($search->status == 1) {
+            return view('search-result', compact('search', 'search_type', 'search_key'));
+        } else {
+            return redirect()->back()->with('error', $search->message);
+        }
     }
 }

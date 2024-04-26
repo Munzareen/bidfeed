@@ -90,7 +90,7 @@
 				<p class="modal-title">Create Post</p>
 				<div class="post-option-wrap">
 					<div class="post-option purple-opt">
-						<a href="#!">
+						<a href="{{ url('create-product') }}">
 							<div class="img-box">
 								<img src="{{ asset('public/assets/images/post-icon-1.png') }}" alt="icon" class="img-fluid">
 							</div>

@@ -9,6 +9,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Artisan;
 
 /*
@@ -44,14 +45,23 @@ Route::controller(AuthController::class)->group(function () { // AuthController
 Route::middleware(['verifyBearerToken'])->group(function () {
 
     Route::controller(AuthController::class)->group(function () { // AuthController
-        Route::get('profile', 'profile'); // Profile    
+        Route::get('profile/{user_id}', 'profile'); // Profile    
         Route::get('detail-order/{order_id}', 'detailOrder'); // detail order     
+        Route::post('create-follow', 'createFollow'); // create follow
+        Route::get('logout', 'logout'); // logout
     });
 
     Route::controller(HomeController::class)->group(function () { // HomeController
         Route::get('home', 'home'); // Home
         Route::post('create-like', 'createLike'); // create like
         Route::get('product-details/{product_id}', 'productDetails'); // Product details
+        Route::get('search', 'search'); // Main search
+        Route::post('create-review', 'createReview'); // createreview
+    });
+
+    Route::controller(ProductController::class)->group(function () { // ProductController
+        Route::get('create-product', 'createProduct'); // create product
+        Route::post('create-product', 'saveProduct'); // save product
     });
     
     Route::controller(CartController::class)->group(function () { // CartController
@@ -69,6 +79,7 @@ Route::middleware(['verifyBearerToken'])->group(function () {
 
     Route::controller(PostController::class)->group(function () { // PostController
         Route::get('create-post', 'createPost'); // create post
+        Route::post('save-post', 'savePost'); // save post
     });
 
     Route::controller(ChatController::class)->group(function () { // BidController

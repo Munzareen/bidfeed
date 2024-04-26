@@ -3,6 +3,9 @@ class User extends REST_Controller {
 	private $_getJson = array();
 	public function __construct(){
 		parent::__construct();
+        Header('Access-Control-Allow-Origin: *'); //for allow any domain, insecure
+        Header('Access-Control-Allow-Headers: *'); //for allow any headers, insecure
+        Header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE'); //method allowed
 	}
 	public function user_post(){
 		$user_arr['user_name'] = $this->input->post('user_name');
@@ -45,7 +48,7 @@ class User extends REST_Controller {
 						$data_set['user_id'] = $get_user_obj->user_id;
 						$data_set['user_authentication'] = $get_user_obj->user_authentication;
 						$this->_getJson['status'] = 1;
-						$this->_getJson['message'] = "Successfully Signup! Kindly check your email verification code has been send on your email.";
+						$this->_getJson['message'] = "Successfully Signup! Kindly first complete profile.";
 						$this->_getJson['data'] = $get_user_obj;
 						$error_code = REST_Controller::HTTP_OK;
 					}else{

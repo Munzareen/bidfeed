@@ -5,71 +5,46 @@ class Admin_model extends CI_Model {
 			$this->load->database();
 	}
 	public function get_admin_obj_field_count($fields_admin){
-		return $this->db->get_where('p_admin',$fields_admin)->num_rows();
+		return $this->db->get_where('b_admin',$fields_admin)->num_rows();
 	}
 	public function get_admin_obj_field($fields_admin){
-		return $this->db->get_where('p_admin',$fields_admin)->row();
+		return $this->db->get_where('b_admin',$fields_admin)->row();
 	}
 	public function update_admin($admin_id,$admin_data){
-		return $this->db->where('admin_id',$admin_id)->update('p_admin',$admin_data);
+		return $this->db->where('admin_id',$admin_id)->update('b_admin',$admin_data);
 	}
 	public function get_users_list(){
-		return $this->db->select('*')->get('p_user')->result_array();
+		return $this->db->select('*')->get('b_user')->result_array();
 	}
+    public function get_transactions(){
+		return $this->db->select('*')->get('b_transaction')->result_array();
+	}
+    public function get_user_withdraw(){
+
+        $this->db->select('b_withdraw.*, b_user.user_name, b_user.user_email, b_bank.*')
+                ->from('b_withdraw')
+                ->join('b_user', 'b_user.user_id = b_withdraw.withdraw_user_id')
+                ->join('b_bank', 'b_bank.bank_user_id = b_withdraw.withdraw_user_id');
+        $result = $this->db->get();
+
+        return $result->result_array();
+	}
+
+    public function get_user_withdraw_row($id){
+		return $this->db->get_where('b_withdraw',array("withdraw_id"=>$id))->row();
+	}
+
+    public function withdraw_status_update($withdraw_id,$status){
+		return $this->db->where('withdraw_id',$withdraw_id)->update('b_withdraw',array("withdraw_status"=>$status));
+	}
+
 	public function user_is_blocked($user_id,$value){
-		return $this->db->where('user_id',$user_id)->update('p_user',['user_is_blocked'=>$value]);
+		return $this->db->where('user_id',$user_id)->update('b_user',['user_is_blocked'=>$value]);
 	}
 	public function get_content($type){
-		return $this->db->get_where('p_content',array("content_type"=>$type))->row();
+		return $this->db->get_where('b_content',array("content_type"=>$type))->row();
 	}
 	public function content_update($content_id,$content){
-		return $this->db->where('content_id',$content_id)->update('p_content',array("content_content"=>$content));
-	}
-
-	public function check_catgory($arr_cate){
-		return $this->db->get_where('p_category',$arr_cate)->row();
-	}
-	public function create_category($cate_arr){
-		return $this->db->insert('p_category',$cate_arr);
-	}
-	public function get_category(){
-		return $this->db->get('p_category')->result_array();
-	}
-	public function delete_category($category_id){
-		return $this->db->where("category_id",$category_id)->delete('p_category');
-	}
-	public function check_char($arr_char){
-		return $this->db->get_where('p_delivery_charges',$arr_char)->row();
-	}
-	public function create_char($char_arr){
-		return $this->db->insert('p_delivery_charges',$char_arr);
-	}
-	public function get_chargies(){
-		return $this->db->get('p_delivery_charges')->result_array();
-	}
-	public function delete_charge($dc_id){
-		return $this->db->where("dc_id",$dc_id)->delete('p_delivery_charges');
-	}
-	public function get_order(){
-		return $this->db->get('p_order')->result_array();
-	}
-	public function delete_order($order_id){
-		return $this->db->where("order_id",$order_id)->delete('p_order');
-	}
-	public function get_detail_order($order_id){
-		$order_get = $this->db->select('(select user_name from p_user where user_id = p_order.order_user_id) as user_name,p_order.*')->get_where('p_order',["order_id"=>$order_id])->row();
-		$get_pickup = $this->db->get_where('p_pickup',["pickup_id"=>$order_get->order_pickup_id])->row();
-		$get_delivery = $this->db->get_where('p_delivery',["delivery_id"=>$order_get->order_delivery_id])->row();
-		$get_chargies = $this->db->get_where('p_delivery_charges',["dc_id"=>$order_get->order_dc_id])->row();
-
-		return array(
-			"information"=>$order_get,
-			"pickup"=>$get_pickup,
-			"delivery"=>$get_delivery,
-			"chargies"=>$get_chargies
-		);
-	}
-	public function update_order($order_id,$arr){
-		return $this->db->where("order_id",$order_id)->update('p_order',$arr);
+		return $this->db->where('content_id',$content_id)->update('b_content',array("content_content"=>$content));
 	}
 }

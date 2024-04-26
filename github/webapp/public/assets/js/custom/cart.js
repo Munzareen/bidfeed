@@ -20,6 +20,10 @@ $(document).on('click', '.add-cart', function(event){
 
             if (data.status == 1) {
                 $('#nav-cart-count').html(data.nav_cart_count);
+                $('#cartbox-dropdown-only').html(data.nav_cart);
+
+                console.log('data --- ', data);
+
                 not(data.message, 'success');
             }
             else if (data.status == 0) {

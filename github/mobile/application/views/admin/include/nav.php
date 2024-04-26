@@ -13,23 +13,15 @@
                         <li><i class="fa fa-share"></i><a href="<?= base_url('admin/user_listing') ?>">User Listing</a></li>
                     </ul>
                 </li>
+
                 <li class="menu-item-has-children dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-list-alt"></i>CATEGORIE'S</a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-bank"></i>BANK MANAGEMENT</a>
                     <ul class="sub-menu children dropdown-menu">
-                        <li><i class="fa fa-share"></i><a href="<?= base_url('admin/create_category') ?>">Create Category</a></li>
-                        <li><i class="fa fa-share"></i><a href="<?= base_url('admin/list_category') ?>">List Category</a></li>
+                        <li><i class="fa fa-share"></i><a href="<?= base_url('admin/transaction') ?>">Transaction</a></li>
+                        <li><i class="fa fa-share"></i><a href="<?= base_url('admin/user_withdraw') ?>">User Withdraw</a></li>
                     </ul>
                 </li>
-                <li class="menu-item-has-children dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-map-marker"></i>CHARGIE'S</a>
-                    <ul class="sub-menu children dropdown-menu">
-                        <li><i class="fa fa-share"></i><a href="<?= base_url('admin/create_charge') ?>">Create Charge</a></li>
-                        <li><i class="fa fa-share"></i><a href="<?= base_url('admin/list_charge') ?>">List Charge</a></li>
-                    </ul>
-                </li>
-                <li class="">
-                    <a href="<?= base_url('admin/list_order') ?>"> <i class="menu-icon fa fa-list"></i>ORDER'S</a>
-                </li>
+
                 <li class="menu-item-has-children dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-area-chart"></i>CONTENT</a>
                     <ul class="sub-menu children dropdown-menu">
@@ -37,6 +29,8 @@
                         <li><i class="fa fa-share"></i><a href="<?= base_url('admin/content?type=pp') ?>">Privacy Policy</a></li>
                         <li><i class="fa fa-share"></i><a href="<?= base_url('admin/content?type=faqs') ?>">FAQs</a></li>
                         <li><i class="fa fa-share"></i><a href="<?= base_url('admin/content?type=contact') ?>">Contact</a></li>
+                        <li><i class="fa fa-share"></i><a href="<?= base_url('admin/content?type=about') ?>">About</a></li>
+                        <li><i class="fa fa-share"></i><a href="<?= base_url('admin/content?type=rp') ?>">Return Policy</a></li>
                     </ul>
                 </li>
             </ul>
